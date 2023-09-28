@@ -1,0 +1,133 @@
+---
+title: "Hito 1"
+author: "Ignacio González"
+format: html
+editor: visual
+---
+
+```{r configuraciones}
+#| message: false
+#| echo: false
+# Esto ya debiera estar cargado en el proyecto en posit.cloud
+# devtools::install_github("business-science/tidyquant")
+# Loads tidyquant, lubridate, xts, quantmod, TTR, and PerformanceAnalytics
+library(tidyverse)
+library(tidyquant)  
+```
+
+## Descripción Activo y Contexto (Hito 1)
+
+Fecha de entrega: Jueves 28 de Septiembre 23:59.
+
+### Definición
+
+Para el presente proyecto, se buscará hacer un análisis profundo sobre los comportamientos financieros del banco Bci (Banco de Crédito e Inversiones). El banco Bci, fundado en 1937, es uno de los bancos mas grandes y establecidos en el país. Bci ofrece una amplia gama de servicios, como banca personal y comercial, servicios de inversión, seguros y mucho más, pero nos enfocaremos específicamente en el activo de fondos mutuos. Los fondos mutuos son un instrumento de inversión que reúne los aportes monetarios de distintas personas, naturales o jurídicas, para invertirlos en diferentes instrumentos de mercado de valores como por ejemplo acciones, instrumentos de renta fija y/o de deuda.
+
+Dentro del articulo "Asset management and investment banking" por Janis Berznins, el cual describe como los conflictos de interés en el negocio de gestión de activos de propiedad por bancos de inversión y conglomerados no bancarios son comunes, estudia como varían los alphas de los fondos mutuos en relación a cuando se invierte en aquellos que son propiedad de los bancos de inversión o cuando son invertidos por entidades no bancarias, dando como resultado una pérdida económica para los inversores que invierten con bancos, logrando una perdida económica de 4.9 billones por año.
+
+```{r ETL}
+#| echo: false
+# Alternativamente Use FANG data set
+# data("FANG") 
+end <- as_date("2022-12-31")
+# Get AAPL and AMZN Stock Prices
+# AAPL <- tq_get("AAPL", get = "stock.prices", from = "2015-09-01", to = end)
+# AMZN <- tq_get("AMZN", get = "stock.prices", from = "2000-01-01", to = end)
+CMPC <- tq_get("BCI.SN", get = "stock.prices", from = "2000-01-01", to = end)
+VAPORES <- tq_get("USDCLP=X", get = "stock.prices", from = "2000-01-01", to = end)
+CONCHATORO <- tq_get("CONCHATORO.SN", get = "stock.prices", from = "2000-01-01", to = end)
+CL <- rbind(CMPC,VAPORES,CONCHATORO)
+```
+
+El activo CMPC tiene un valor promedio para el intervalo igual a `r round(mean(CMPC$close),digits=0)`
+
+```{r CMPCline}
+#| echo: false
+CMPC %>%
+    ggplot(aes(x = date, y = close)) +
+    geom_line() +
+    labs(title = "CMPC Line Chart", y = "Closing Price", x = "") + 
+    theme_tq() +
+  geom_hline(yintercept=mean(CMPC$close), linetype="dashed", color = "red")
+```
+
+```{r CMPCcandle}
+#| warning: false
+CMPC %>%
+    ggplot(aes(x = date, y = close)) +
+    geom_candlestick(aes(open = open, high = high, low = low, close = close)) +
+    labs(title = "AAPL Candlestick Chart", y = "Closing Price", x = "") +
+    theme_tq()
+```
+
+### Motivación
+
+El banco BCI es una corporación financiera chilena controlada por la familia Yarur desde su fundación hace 76 años. Es el tercer mayor banco privado en Chile y cuenta con una sólida clasificación de riesgo internacional (A1: Moody´s, A: S&P y Fitch ratings: A-). Cuenta con 384 puntos de contacto a lo largo de Chile y presencia internacional en EEUU, Colombia, Perú, Brasil, México y España. Ofrece productos tales como cuentas corrientes, depósitos, préstamos, tarjetas de crédito, factoring, leasing, cash management, comercio exterior, fondos mutuos, asesorías financieras, operaciones de mesa de dinero, intermediación de acciones, bonos y seguros entre otros. Durante 2013 fue premiada en Chile como la empresa más transparente, con mejor gobierno corporativo, como el mejor grupo financiero, como la mejor banca privada, como la mejor administradora de fondos mutuos y reconocida con el mejor servicio y experiencia de clientes en la categoría bancos grandes (encuestas Ipsos/Izo).
+
+### Contexto
+
+Como se mencionó anteriormente, se hará un análisis financiero sobre el banco Bci pero enfocado particularmente en uno de sus fondos mutuos. Para continuar con el análisis, se investigará sobre variables que pueden afectar el activo, entregando estadística descriptiva y gráficos.
+
+En primer lugar, se analizará el fondo mutuo Bci Acciones Globales, el cual es un fondo mutuo de serie de alto patrimonio el cual su objetivo principal es "El objeto de inversión del Fondo será principalmente invertir en cuotas del sub fondo extranjero, domiciliado en Luxemburgo, denominado"BCI AM SICAV - Global Equity Fund" (denominado en adelante el "Sub Fondo Extranjero"). El Fondo deberá mantener invertido al menos un 70% de sus activos en el Sub Fondo Extranjero."
+
+Al ser un fondo de moneda extranjera, se tomará como variable el precio del colar en Chile, el cual en un periodo de 6 meses ha tenido un incremento de un 14.73% obteniendo un valor de \$909 CLP a la fecha.
+
+Por último, se analizará el fondo "BCI AM SICAV - Global Equity Fund", el cual es el fondo extranjero en donde se invierte por lo menos el 70% de los activos del fondo a analizar. El fondo extranjero ha tenido un incremento de un 15,53% a la fecha y tiene un tamaño de 31.26 millones de dólares.
+
+```{r context}
+#| warning: false
+#| echo: false
+start <- end - weeks(6)
+
+CL %>%
+    filter(date >= start - days(2 * 15)) %>%
+    ggplot(aes(x = date, y = close, group = symbol)) +
+    geom_candlestick(aes(open = open, high = high, low = low, close = close)) +
+    geom_ma(ma_fun = SMA, n = 15, color = "darkblue", size = 1) +
+    labs(title = "CL Candlestick Chart", 
+         subtitle = "Experimenting with Mulitple Stocks",
+         y = "Closing Price", x = "") + 
+    coord_x_date(xlim = c(start, end)) +
+    facet_wrap(~ symbol, ncol = 2, scale = "free_y") +
+    theme_tq()
+```
+
+::: columns
+Rentabilidad Fondo Mutuo Bci Acciones Globales
+
+::: {.column width="50%"}
+![](photos/Imagen1.png){fig-align="left"}
+:::
+:::
+
+Rentabilidad Fondo Extranjero
+
+![](photos/imagen3.png){fig-align="left"}
+
+### Análisis de Largo Plazo
+
+#### Caracterización deuda (Aplicación cap. 15)
+
+Como se mencionó anteriormente, nos focalizaremos en el fondo mutuo Acciones Globales. El Fondo Mutuo Bci Acciones Globales dirigido a inversionistas calificados de libre inversión extranjero - derivados, domiciliado y constituido bajo las Leyes chilenas. El objeto de inversión del Fondo será principalmente invertir en cuotas del sub fondo extranjero, domiciliado en Luxemburgo, denominado "BCI AM SICAV - Global EquityFund" (denominado en adelante el "Sub Fondo Extranjero"). El Fondo deberá mantener invertido al menos un 70% de sus activos en el Sub Fondo Extranjero.
+
+El Sub Fondo Extranjero tiene como objeto invertir al menos el 70% de sus activos en un portfolio compuesto por instrumentos de capitalización UCIT´s o UCI´s, con exposición a activos en todo el mundo (desarrollado y emergente). Los instrumentos que utilice el Sub fondo están domiciliados en EEA (EuropeanEconomicArea).
+
+La diversificación del activo total del fondo se distribuye en:
+
+![](photos/imagen%202.jpg){fig-align="center"}
+
+#### Caracterización de emisiones históricas (Aplicación cap. 20)
+
+Los aportes del Fondo deberán ser pagados en pesos, el aporte recibido se expresará en cuotas del Fondo, utilizando el valor de la cuota correspondiente al mismo día de la recepción si este se efectuase antes del cierre de operaciones del Fondo o el valor de la cuota de día siguiente al de la recepción, si el aporte se efectuare con posterioridad a dicho cierre. En caso de colocaciones de Cuotas efectuadas en los sistemas de negociación bursátil autorizados por la Comisión para el mercado financiero, el precio de la Cuota será aquel que libremente estipulen las partes en esos sistemas de negociación.
+
+#### Relación con activos derivados
+
+El fondo analizado opera con instrumentos financieros derivados con la finalidad de tener una mayor cobertura de riesgos asociados a su inversión. El uso de instrumentos financieros derivados como cobertura también conlleva riesgos, como la posibilidad de que exista una correlación imperfecta entre el valor de los contratos de derivados y las inversiones objeto de cobertura, lo que puede llevar a multiplicar las perdidas o ganancias de la cartera.
+
+Cuando el Fondo mantiene instrumentos financieros derivados que se pagan por compensación utiliza precios de mercado intermedios como una base para establecer valores razonables para compensar las posiciones de riesgo y aplica este precio de compra o venta a la posición neta abierta, según sea apropiado.
+
+El valor razonable de activos y pasivos financieros que no son transados en un mercado activo como derivados extrabursátiles, también son determinados usando la información financiera disponible por la agencia de servicios de pricing RiskAmerica.
+
+### Reporte grupal
+
+Definicion de un balance de portafolio sobre los 3 activos del grupo, donde se especifique los pesos de cada activo de tal forma que maximize el retorno de la cartera.
