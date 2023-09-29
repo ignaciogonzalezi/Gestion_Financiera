@@ -129,5 +129,3 @@ Cuando el Fondo mantiene instrumentos financieros derivados que se pagan por com
 El valor razonable de activos y pasivos financieros que no son transados en un mercado activo como derivados extrabursátiles, también son determinados usando la información financiera disponible por la agencia de servicios de pricing RiskAmerica.
 
 ### Reporte grupal
-
-Definicion de un balance de portafolio sobre los 3 activos del grupo, donde se especifique los pesos de cada activo de tal forma que maximize el retorno de la cartera.
