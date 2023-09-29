@@ -39,14 +39,14 @@ CONCHATORO <- tq_get("CONCHATORO.SN", get = "stock.prices", from = "2000-01-01",
 CL <- rbind(CMPC,VAPORES,CONCHATORO)
 ```
 
-El activo CMPC tiene un valor promedio para el intervalo igual a `r round(mean(CMPC$close),digits=0)`
+El activo BCI tiene un valor promedio para el intervalo igual a `r round(mean(CMPC$close),digits=0)`
 
 ```{r CMPCline}
 #| echo: false
 CMPC %>%
     ggplot(aes(x = date, y = close)) +
     geom_line() +
-    labs(title = "CMPC Line Chart", y = "Closing Price", x = "") + 
+    labs(title = "BCI Line Chart", y = "Closing Price", x = "") + 
     theme_tq() +
   geom_hline(yintercept=mean(CMPC$close), linetype="dashed", color = "red")
 ```
@@ -129,3 +129,82 @@ Cuando el Fondo mantiene instrumentos financieros derivados que se pagan por com
 El valor razonable de activos y pasivos financieros que no son transados en un mercado activo como derivados extrabursátiles, también son determinados usando la información financiera disponible por la agencia de servicios de pricing RiskAmerica.
 
 ### Reporte grupal
+
+El objetivo del portafolio es de largo plazo, por lo que se estudiará a más de un año,  buscando retornos altos en el largo plazo y teniendo presente el riesgo que implica esto. El portafolio es de renta variable, por lo que siempre se tendrá que considerar el riesgo que este tipo de inversiones implica.
+
+Para poder obtener las ponderaciones del portafolio, se debe realizar un análisis a cada activo por invertir, donde se consideraron los Beta de cada acción y las industrias pertenecientes a cada activo.
+
+Banco Bci está presente en la industria bancaria donde a grandes rasgos las inversiones están asociadas al manejo de carteras, en donde se analizará específicamente la inversión al Fondo Mutuo de Acciones Globales por parte del grupo Bci. Este fondo es de moneda extranjera el cual invierte principalmente en cuotas del subfondo extranjero, domiciliado en Luxemburgo, denominado \"BCI AM SICAV - Global EquityFund\".
+
+Colbún es la tercera empresa más grande en el sector eléctrico chileno y ha tenido un aumento en activos en el último año. La empresa ha ido en un crecimiento constante desde que cambió de controlador, siendo dirigida principalmente por la familia Matte, bajo la empresa Minera Valparaíso. Los últimos años ha presentado un plan de largo plazo para generar en gran cantidad energía sustentable, con el fin de alinearse con las necesidades actuales. Aunque actualmente presenta un mes de rentabilidad negativa, su anualidad en los dos últimos años, es de alrededor de un 40%, lo que lo hace una empresa interesante para invertir, considerando un riesgo alto.
+
+Cencosud está invirtiendo fuertemente en Estados Unidos, con una promesa de abrir una nueva tienda cada 33 días. Por lo tanto, las ganancias que obtenga la empresa serán a largo plazo cuando estas comiencen a operar, entonces se espera que el valor de la acción continúe creciendo moderadamente como ha sido a lo largo del año.
+
+Según las estadísticas de Yahoo Finance, los betas de los activos tienen las siguientes cifras; 0.37 COLBÚN, 0.18 BCI, 0.55 CENCOSUD.
+
+|          |       |
+|----------|-------|
+| Activo   | Betas |
+| CENCOSUD | 0.55  |
+| COLBUN   | 0.37  |
+| BCI      | 0.18  |
+
+Además, los retorno anuales de estos respectivamente son; 46.48% para COLBÚN, 11.9% para BCI y 29.97% para CENCOSUD.
+
+|          |              |
+|----------|--------------|
+| Activo   | Rentabilidad |
+| CENCOSUD | 29.97%       |
+| COLBUN   | 46.48%       |
+| BCI      | 11.9%        |
+
+A este portafolio se le invertirá 100 millones de pesos chilenos con las siguientes ponderaciones:
+
+|          |             |
+|----------|-------------|
+| Activo   | Ponderación |
+| CENCOSUD | 30%         |
+| COLBUN   | 50%         |
+| BCI      | 20%         |
+
+Este conjunto de inversiones, diseñado para personas que prefieren un nivel moderadamente alto de seguridad financiera, asigna el 30% de los recursos al activo más arriesgado, que tiene una mayor sensibilidad al riesgo (medida por su beta). Hemos asignado un 20% a BCI, ya que esperamos que tenga una volatilidad limitada debido a su rentabilidad moderada y su baja sensibilidad al riesgo. Además, hemos dado prioridad a los activos que han experimentado un mayor aumento en su valor durante el año, asignándoles una mayor ponderación en la cartera. Finalmente se ponderó un 50% de Colbún para poder obtener el retorno alto esperado, debido a que es una empresa que muestra un beta de 0.37, el cual no lo hace tan riesgosa y tiene los retornos esperados más altos.
+
+```{r}
+#| echo: false
+# Alternativamente Use FANG data set
+# data("FANG") 
+end <- as_date("2022-12-31")
+# Get AAPL and AMZN Stock Prices
+# AAPL <- tq_get("AAPL", get = "stock.prices", from = "2015-09-01", to = end)
+# AMZN <- tq_get("AMZN", get = "stock.prices", from = "2000-01-01", to = end)
+CENCOSUD <- tq_get("CENCOSUD.SN", get = "stock.prices", from = "2000-01-01", to = end)
+BCI <- tq_get("BCI.SN", get = "stock.prices", from = "2000-01-01", to = end)
+COLBUN <- tq_get("COLBUN.SN", get = "stock.prices", from = "2000-01-01", to = end)
+
+# Cargar las bibliotecas necesarias
+library(tidyquant)
+library(ggplot2)
+
+# Definir las fechas de inicio y fin para el último año
+end_date <- Sys.Date()
+start_date <- end_date - years(1)
+
+# Filtrar datos para las acciones de BCI, COBLUN y CENCOSUD
+selected_stocks <- c("BCI.SN", "COLBUN.SN", "CENCOSUD.SN")
+stock_data <- tq_get(selected_stocks, from = start_date, to = end_date)
+
+# Asegurarse de que "symbol" sea una variable de factor
+stock_data$symbol <- factor(stock_data$symbol)
+
+# Crear gráficos de velas para las acciones seleccionadas
+stock_data %>%
+  ggplot(aes(x = date, y = close, group = symbol)) +
+  geom_candlestick(aes(open = open, high = high, low = low, close = close)) +
+  labs(title = "Candlestick Chart",
+       subtitle = "Stock Price Movement (Last Year)",
+       y = "Closing Price",
+       x = "Date") +
+  coord_x_date(xlim = c(start_date, end_date)) +
+  facet_wrap(~ symbol, ncol = 1, scale = "free_y") +
+  theme_tq()
+```
