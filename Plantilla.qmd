@@ -1,5 +1,5 @@
 ---
-title: "Hito 1"
+title: "Hito 2"
 author: "Ignacio González"
 format: html
 editor: visual
@@ -34,9 +34,8 @@ end <- as_date("2022-12-31")
 # AAPL <- tq_get("AAPL", get = "stock.prices", from = "2015-09-01", to = end)
 # AMZN <- tq_get("AMZN", get = "stock.prices", from = "2000-01-01", to = end)
 CMPC <- tq_get("BCI.SN", get = "stock.prices", from = "2000-01-01", to = end)
-VAPORES <- tq_get("USDCLP=X", get = "stock.prices", from = "2000-01-01", to = end)
-CONCHATORO <- tq_get("CONCHATORO.SN", get = "stock.prices", from = "2000-01-01", to = end)
-CL <- rbind(CMPC,VAPORES,CONCHATORO)
+DOLAR <- tq_get("USDCLP=X", get = "stock.prices", from = "2000-01-01", to = end)
+CL <- rbind(CMPC,DOLAR)
 ```
 
 El activo BCI tiene un valor promedio para el intervalo igual a `r round(mean(CMPC$close),digits=0)`
@@ -134,7 +133,7 @@ El objetivo del portafolio es de largo plazo, por lo que se estudiará a más de
 
 Para poder obtener las ponderaciones del portafolio, se debe realizar un análisis a cada activo por invertir, donde se consideraron los Beta de cada acción y las industrias pertenecientes a cada activo.
 
-Banco Bci está presente en la industria bancaria donde a grandes rasgos las inversiones están asociadas al manejo de carteras, en donde se analizará específicamente la inversión al Fondo Mutuo de Acciones Globales por parte del grupo Bci. Este fondo es de moneda extranjera el cual invierte principalmente en cuotas del subfondo extranjero, domiciliado en Luxemburgo, denominado \"BCI AM SICAV - Global EquityFund\".
+Banco Bci está presente en la industria bancaria donde a grandes rasgos las inversiones están asociadas al manejo de carteras, en donde se analizará específicamente la inversión al Fondo Mutuo de Acciones Globales por parte del grupo Bci. Este fondo es de moneda extranjera el cual invierte principalmente en cuotas del subfondo extranjero, domiciliado en Luxemburgo, denominado "BCI AM SICAV - Global EquityFund".
 
 Colbún es la tercera empresa más grande en el sector eléctrico chileno y ha tenido un aumento en activos en el último año. La empresa ha ido en un crecimiento constante desde que cambió de controlador, siendo dirigida principalmente por la familia Matte, bajo la empresa Minera Valparaíso. Los últimos años ha presentado un plan de largo plazo para generar en gran cantidad energía sustentable, con el fin de alinearse con las necesidades actuales. Aunque actualmente presenta un mes de rentabilidad negativa, su anualidad en los dos últimos años, es de alrededor de un 40%, lo que lo hace una empresa interesante para invertir, considerando un riesgo alto.
 
@@ -208,3 +207,102 @@ stock_data %>%
   facet_wrap(~ symbol, ncol = 1, scale = "free_y") +
   theme_tq()
 ```
+
+### Aplicación Black-Scholes
+
+Se valoriza correctamente una opción de compra del activo principal definido en el Hito 1, utilizando el modelo de Black-Scholes continuo apoyándose de un código replicable que compute el modelo. Se apoya de literatura para complementar su valorización.
+
+```{python}
+#| echo: false
+import yfinance as yf
+from datetime import datetime as dt
+import datetime
+from scipy.stats import norm
+import math
+from math import log, sqrt, exp
+
+def black_scholes(S, K, T, r, sigma):
+    d1 = (log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * sqrt(T))
+    d2 = d1 - sigma * sqrt(T)
+    option_price = K * exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1) #codigo para una put
+    return option_price
+
+t = yf.Ticker("SAN")
+S = t.info["currentPrice"] # Precio actual del activo subyacente
+stock_data = yf.download("SAN", start="2023-01-01", end="2023-10-24")
+# Calcula la variación del rendimiento
+stock_data["Returns"] = stock_data["Adj Close"].pct_change()
+sigma = stock_data["Returns"].std() # Volatilidad del activo subyacente 
+opcion = yf.Ticker("SAN240119P00007000")
+K = opcion.info["strikePrice"] # Precio de ejercicio de la opción
+expire_date = opcion.info["expireDate"]
+fecha = datetime.datetime.utcfromtimestamp(expire_date)
+T = ((fecha-dt.now()).days)/365# Tiempo hasta la expiración de la opción en años
+bono = yf.download("^TNX", start="2023-01-01", end=dt.now(), interval = "1d")["Close"] #Resultados del bono de la tesorería
+r = bono[-1]/100 #Se obtiene el rendimiento del bono mas reciente y se convierte a porcentaje (R).
+
+precio = black_scholes(S, K, T, r, sigma)
+print(precio)
+
+
+```
+
+### Modelo Adicional de valorizacion
+
+Se explica junto con descripcion matemática (fórmulas) correcta un modelo alternativo para valorizar la accion haciendo revisión de literatura cientifica con tal de hacer una referencia a un artículo del modelo.
+
+### Aplicacion modelo adicional
+
+Se aplica el modelo alternativo apoyandose de un código replicable que computa el modelo.
+
+```{python}
+#| echo: false
+import numpy as np
+import yfinance as yf
+from datetime import datetime as dt
+import datetime
+from scipy.stats import norm
+import math
+from math import log, sqrt, exp
+
+def monte_carlo_option_pricing(S, K, T, r, sigma, num_simulations):
+    z = np.random.standard_normal(num_simulations)
+    ST = S * np.exp((r - 0.5 * sigma**2) * T + sigma * np.sqrt(T) * z)
+    option_prices = np.maximum(K - ST, 0)
+    option_price = np.exp(-r * T) * np.mean(option_prices)
+    return option_price
+
+t = yf.Ticker("SAN")
+S = t.info["currentPrice"] # Precio actual del activo subyacente
+stock_data = yf.download("SAN", start="2023-01-01", end="2023-10-24")
+# Calcula la variación del rendimiento
+stock_data["Returns"] = stock_data["Adj Close"].pct_change()
+sigma = stock_data["Returns"][-1] # Volatilidad del activo subyacente 
+opcion = yf.Ticker("SAN240119P00007000")
+K = opcion.info["strikePrice"] # Precio de ejercicio de la opción
+expire_date = opcion.info["expireDate"]
+fecha = datetime.datetime.utcfromtimestamp(expire_date)
+T = ((fecha-dt.now()).days)/365# Tiempo hasta la expiración de la opción en años
+bono = yf.download("^TNX", start="2023-01-01", end=dt.now(), interval = "1d")["Close"] #Resultados del bono de la tesorería
+r = bono[-1]/100 #Se obtiene el rendimiento del bono mas reciente y se convierte a porcentaje (R).
+num_simulations = 10000
+
+
+precioM = monte_carlo_option_pricing(S, K, T, r, sigma, num_simulations)
+print(precioM)
+
+```
+
+### Análisis de contraste de ambos modelos
+
+Se realiza una comparación de los resultados de ambos modelos de valorización explicando sus similitudes y diferencias.
+
+### Reporte Grupal: Caso Administración
+
+Se eligen uno de los siguientes casos con tal de replicar y responder sus preguntas de acuerdo al activo principal elegido:
+
+Caso Administración de Capital de Trabajo de Keafer Manufacturing de la página 822 del ROSS.
+
+Caso Administración de Efectivo de Richmond Corporation de la página 845 del ROSS.
+
+Caso Administración de Efectivo de Braam Industries de la página 874 del ROSS.
