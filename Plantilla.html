@@ -299,7 +299,9 @@ open, high, low, close, y
 </section>
 <section id="aplicación-black-scholes" class="level3">
 <h3 class="anchored" data-anchor-id="aplicación-black-scholes">Aplicación Black-Scholes</h3>
-<p>Se valoriza correctamente una opción de compra del activo principal definido en el Hito 1, utilizando el modelo de Black-Scholes continuo apoyándose de un código replicable que compute el modelo. Se apoya de literatura para complementar su valorización.</p>
+<p>El modelo de Black-Scholes es un metodo utilizado para valorar opciones financeras de un activo. Se basa en la suposicion de los precios del activo financiero, los cuales siguen un proceso estocastico logaritmico. El modelo utiliza varios parametros, principalmente el precio actual del activo, el precio de ejercicio de la opcion, el tiempo de expiracion y la volatilidad del activo. Tambien incluye la tasa libre de riesgo. Obteniendo estos datos se calcula el valor teorico de una opcion financiera.</p>
+<p>En este caso, el activo escogido para el Hito 1 pertenece al Banco Credito e Inversiones (BCI), pero al no tener opciones se prefirio estudiar el banco Santander, el cual es un banco similar al BCI y si esta abierto a opciones dentro de la bolsa. Aun asi, existen ciertos riesgos asociados a las diferencias entre ambos bancos que podrian afectar la precision del resultado.</p>
+<p>A continuacion utilizaremos un codigo de Pyhton para valorizar una opcion del banco Santander, con fecha de 19 de enero del 2024, la cual utiliza la informacion de YahooFinance.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -310,17 +312,29 @@ open, high, low, close, y
 [*********************100%%**********************]  1 of 1 completed</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>3.2723188445552647</code></pre>
+<pre><code>3.273301499697696</code></pre>
 </div>
 </div>
+<p>En resumen, el valor obtenido es de 3.3 aproximadamente, lo que nos dice que según el modelo de Black-Scholes ese seria el valor teroico estimado del activo en ese momemnto, asuiendo que sigue los supuestos y parametros utilizados en el modelo.</p>
 </section>
 <section id="modelo-adicional-de-valorizacion" class="level3">
-<h3 class="anchored" data-anchor-id="modelo-adicional-de-valorizacion">Modelo Adicional de valorizacion</h3>
-<p>Se explica junto con descripcion matemática (fórmulas) correcta un modelo alternativo para valorizar la accion haciendo revisión de literatura cientifica con tal de hacer una referencia a un artículo del modelo.</p>
+<h3 class="anchored" data-anchor-id="modelo-adicional-de-valorizacion">Modelo Adicional de Valorizacion</h3>
+<p>Dentro del articulo hecho por Maria Ines Barbosa, Alejandra Salazar y Kelly Jhohana el cual habla sobre la valoración de riesgo mediante modelos GARCH y simulación Montecarlo, nos dice que “El método de simulación Montecarlo permite la estimación de manera paramétrica y no paramétrica, ofrece una descripción más realista del riesgo a partir del ajuste de una distribución empírica de los retornos.” El modelo Montecarlo que se puede utilizar para valorizar activos consiste en generar múltiples trayectorias aleatorias del precio del activo subyacente y se calcula el valor esperado de la opción tomando en cuenta todas las posibles trayectorias.</p>
+<p>La fórmula matemática para el Modelo de Montecarlo es la siguiente:</p>
+<p>V = e^(-rT) * Σ[Payoff(S)] / N</p>
+<p>Donde:</p>
+<ul>
+<li><p>V representa el valor estimado de la opción.</p></li>
+<li><p>r es la tasa libre de riesgo.</p></li>
+<li><p>T es el tiempo hasta la expiración de la opción.</p></li>
+<li><p>Payoff(S) representa el pago resultante de cada una de las trayectorias aleatorias del precio del activo subyacente S.</p></li>
+<li><p>N es el número total de trayectorias generadas.</p></li>
+</ul>
+<p>Utilizando simulaciones Monte Carlo, se generan múltiples trayectorias aleatorias del precio del activo subyacente y se calcula cada uno de los pagos resultantes para luego promediarlos y descontarlos al valor presente utilizando la tasa libre de riesgo. Este resultado representa una estimación del valor teórico esperado para la opción.</p>
 </section>
 <section id="aplicacion-modelo-adicional" class="level3">
 <h3 class="anchored" data-anchor-id="aplicacion-modelo-adicional">Aplicacion modelo adicional</h3>
-<p>Se aplica el modelo alternativo apoyandose de un código replicable que computa el modelo.</p>
+<p>Usando un codgio en Python, valorizamos una opcion del banco Santander utilizando el metodo Monte Carlo:</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -331,20 +345,128 @@ open, high, low, close, y
 [*********************100%%**********************]  1 of 1 completed</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>3.2722854986208434</code></pre>
+<pre><code>3.273408971546544</code></pre>
 </div>
 </div>
+<p>El valor obtenido utilizando el metodo de Montecarlo es de 3.3 aproxiamdamente, logrando un valor bastante similar a Black-Scholes.</p>
 </section>
 <section id="análisis-de-contraste-de-ambos-modelos" class="level3">
 <h3 class="anchored" data-anchor-id="análisis-de-contraste-de-ambos-modelos">Análisis de contraste de ambos modelos</h3>
-<p>Se realiza una comparación de los resultados de ambos modelos de valorización explicando sus similitudes y diferencias.</p>
+<p>Analizando el contraste de ambos modelos, podemos notar que los valores son bastante parecidos o incluso casi iguales. Esto es positivo y puede dar mayor confianza en la precisión de las valoraciones realizadas. El hecho de que ambos modelos produzcan resultados cercanos nos dice que tanto el enfoque analítico (Black-Scholes) como el enfoque basado en simulaciones (Montecarlo) están capturando adecuadamente los factores relevantes para valorizar el activo.</p>
+<p>Sin embargo, es importante tener en cuenta que estos resultados aún son estimaciones teóricas y podrían diferir del valor real del activo. Además, hay que considerar las limitaciones y supuestos asociados a cada modelo.</p>
+<p>En resumen, si los valores obtenidos con Black-Scholes y Montecarlo son similares, esto nos da un respaldo adicional a la valoración realizada. Sin embargo, siempre es recomendable realizar análisis adicionales y considerar otros factores relevantes.</p>
 </section>
 <section id="reporte-grupal-caso-administración" class="level3">
 <h3 class="anchored" data-anchor-id="reporte-grupal-caso-administración">Reporte Grupal: Caso Administración</h3>
-<p>Se eligen uno de los siguientes casos con tal de replicar y responder sus preguntas de acuerdo al activo principal elegido:</p>
-<p>Caso Administración de Capital de Trabajo de Keafer Manufacturing de la página 822 del ROSS.</p>
-<p>Caso Administración de Efectivo de Richmond Corporation de la página 845 del ROSS.</p>
-<p>Caso Administración de Efectivo de Braam Industries de la página 874 del ROSS.</p>
+<ol type="1">
+<li>Se espera un aumento de 8% en las ventas de cada trimestre, y como las ventas del primer trimestre actual fueron 735000, lo que multiplicado por el 8%. T1 A 2= 735000*1.08=793800 . Luego las cuentas por cobrar cobrar serán iguales al pronóstico de ventas multiplicado por el periodo de cuentas por cobrar, luego se resta el porcentaje "incobrable" Cuentas por cobrar=(793800*57365)- (10%*793800)=124446. Por el lado del forecast de suministros se calcula como Suministros T1 A2=50% de ventas proyectadas para T2=50% de 793800=396900. Pagos a proveedores, la empresa se demora en promedio 53 días en pagarle a sus proveedores, por lo tanto la ecuación queda de la siguiente manera Pagos a proveedores T1 A2=53365*793800= 115140. Siguiendo con los costos que se proyectan, los cuales se definieron como el 25% del forecast de ventas, por lo que corresponde a Costos=25%*793800= 198450. El flujo de efectivo neto para T1 A2 va a ser igual a las ventas proyectadas menos el pagos a proveedores menos los costos Flujo de Efectivo Neto= 793800-115140-198450=480210. Con todo lo anterior podemos calcular el saldo de efectivo al final de T1A2, el cual se define como Saldo de efectivo al final de T1A2=1495000+480210=1975210</li>
+</ol>
+<p>De forma más ordenada se procederá a dejar una tabla con la información de los cálculos para cada uno de los trimestres.</p>
+<p>››››</p>
+<table class="table">
+<colgroup>
+<col style="width: 44%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Trimestre 1</td>
+<td>Trimestre 2</td>
+<td>Trimestre 3</td>
+<td>Trimestre 4</td>
+</tr>
+<tr class="even">
+<td>Ventas proyectadas</td>
+<td>793800</td>
+<td>857424</td>
+<td>944837</td>
+<td>890408</td>
+</tr>
+<tr class="odd">
+<td>Cuentas por cobrar</td>
+<td>124446</td>
+<td>134595</td>
+<td>148301</td>
+<td>139524</td>
+</tr>
+<tr class="even">
+<td>Suministros proyectados</td>
+<td>396900</td>
+<td>437410</td>
+<td>412062</td>
+<td>396900</td>
+</tr>
+<tr class="odd">
+<td>Pagos a proveedores&nbsp;</td>
+<td>115140</td>
+<td>123781</td>
+<td>136511</td>
+<td>129649</td>
+</tr>
+<tr class="even">
+<td>Costos proyectados&nbsp;</td>
+<td>198450</td>
+<td>214356</td>
+<td>236209</td>
+<td>222602</td>
+</tr>
+<tr class="odd">
+<td>Flujo de Efectivo Neto</td>
+<td>480210</td>
+<td>519287</td>
+<td>572117</td>
+<td>538157</td>
+</tr>
+<tr class="even">
+<td>Saldo de Efectivo al Final del Trimestre</td>
+<td>1975210</td>
+<td>2494497</td>
+<td>3066614</td>
+<td>3604771</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="1">
+<li><p>Realizar este cambio en el saldo mínimo de efectivo solo implica que la empresa va a reducir su "colchón" económico, con lo que estaría dispuesto a poner mayor cantidad de efectivo en circulación para conseguir sus objetivos y poder suplir la demanda solicitada. Como se puede ver en la tabla anterior, tanto para 90000 dólares como para los 70000 dólares no será necesario, ya que el flujo mínimo está muy por encima del mínimo, debido a esto Kiefer no presentará problemas económicos según sus proyecciones.</p></li>
+<li><p>Para calcular nuevamente el presupuesto de ventas con un crecimiento de 5% y 11% en las ventas con respecto al trimestre del año anterior y como dice manteniendo el saldo mínimo en lo que Adam propuso, lo que es un valor de 90000. A continuación se encontrará una tabla resumen de los resultado:&nbsp;&nbsp;</p></li>
+</ol>
+<table class="table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 18%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Ventas</td>
+<td>Trimestre 1</td>
+<td>Trimestre 2</td>
+<td>Trimestre 3</td>
+<td>Trimestre 4</td>
+</tr>
+<tr class="even">
+<td>Crecimiento de 5%</td>
+<td>833490</td>
+<td>900295</td>
+<td>992079</td>
+<td>935928</td>
+</tr>
+<tr class="odd">
+<td>Crecimiento de 11%</td>
+<td>881778</td>
+<td>950590</td>
+<td>1048264</td>
+<td>988653</td>
+</tr>
+</tbody>
+</table>
+<p>Por lo que se puede ver en la tabla, habría problemas para suplir en ambos casos las proyecciones de ventas del trimestre 1 siguiente, debido a esto se tendrá que buscar alguna solución la cual puede ser desde evaluar opciones de inversiones para suplir el excedente, estudiar la demanda con un caso de sensibilidad, negociar pagos con los proveedores, al igual de negociar los costos con los mismos, optimizar la logística para reducir costos, entre otras cosas.</p>
 </section>
 </section>
 
