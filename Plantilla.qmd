@@ -117,6 +117,22 @@ La diversificación del activo total del fondo se distribuye en:
 
 #### Caracterización de emisiones históricas (Aplicación cap. 20)
 
+En relación con la emisión, se ofrece preferentemente a los accionistas de la Sociedad, quienes tendrán el derecho de suscribir una (1) acción por cada 6,7889 acciones que posean inscritas en el Registro de Accionistas a la medianoche del día 14 de septiembre de 2023. Esta proporción se ajustará elevando al entero superior la fracción mayor que 0,5 y bajando al entero inferior la fracción menor.
+
+Las acciones deben ser pagadas al contado, en dinero efectivo, vale vista bancario, transferencia electrónica de fondos o cualquier instrumento representativo de dinero pagadero a la vista, al momento de la suscripción.
+
+El precio de colocación de las acciones será determinado libremente por el directorio del Banco en una próxima sesión, teniendo en cuenta el precio de las transacciones de las acciones en la Bolsa de Comercio de Santiago antes del inicio del Período de Opción Preferente. Este precio será comunicado mediante hecho esencial al mercado.
+
+Los fondos obtenidos de esta emisión se destinarán a sustentar la estrategia de crecimiento local e internacional del Banco, conforme a los requerimientos de capital bajo Basilea III.
+
+El aviso de opción preferente se publicará en el diario El Mercurio de Santiago el día 22 de septiembre de 2023. Los accionistas con derecho a suscribir las acciones o cesionarios de las opciones deben hacerlo y pagarlas en un plazo de 30 días contados desde el inicio de la opción, es decir, entre el 22 de septiembre de 2023 y el 21 de octubre de 2023, renunciando a este derecho si no lo hacen dentro de dicho plazo.
+
+Para suscribir las acciones, los accionistas deben dirigirse a las oficinas de DCV Registros S.A. El derecho de suscripción preferente es renunciable y transferible dentro del plazo de 30 días señalado. La transferencia de las opciones debe hacerse mediante escritura privada o escritura pública, y la cesión solo produce efecto después de que la Sociedad tome conocimiento de la misma.
+
+La Sociedad pondrá a disposición de los accionistas o cesionarios certificados en que consten los derechos preferentes de suscripción que poseen. Las acciones no suscritas podrán ser ofrecidas a accionistas o terceros, sujeto a condiciones y precios no más favorables que los fijados para el Período de Opción Preferente, al menos por los 30 días siguientes al término del respectivo período.
+
+Vencido el plazo, según el Artículo 29 del Reglamento de Sociedades Anónimas, las acciones no suscritas se ofrecerán a terceros en las bolsas de valores de Santiago. Las acciones del Banco cuentan con clasificación AAA por las clasificadoras de riesgo Fitch Chile Clasificadora de Riesgo Limitada y Feller Rate Clasificadora de Riesgo Limitada.
+
 Los aportes del Fondo deberán ser pagados en pesos, el aporte recibido se expresará en cuotas del Fondo, utilizando el valor de la cuota correspondiente al mismo día de la recepción si este se efectuase antes del cierre de operaciones del Fondo o el valor de la cuota de día siguiente al de la recepción, si el aporte se efectuare con posterioridad a dicho cierre. En caso de colocaciones de Cuotas efectuadas en los sistemas de negociación bursátil autorizados por la Comisión para el mercado financiero, el precio de la Cuota será aquel que libremente estipulen las partes en esos sistemas de negociación.
 
 #### Relación con activos derivados
@@ -329,14 +345,14 @@ En resumen, si los valores obtenidos con Black-Scholes y Montecarlo son similare
 
 ### Reporte Grupal: Caso Administración
 
-1.  Se espera un aumento de 8% en las ventas de cada trimestre, y como las ventas del primer trimestre actual fueron 735000, lo que multiplicado por el 8%. T1 A 2= 735000\*1.08=793800 . Luego las cuentas por cobrar cobrar serán iguales al pronóstico de ventas multiplicado por el periodo de cuentas por cobrar, luego se resta el porcentaje \"incobrable\" Cuentas por cobrar=(793800\*57365)- (10%\*793800)=124446. Por el lado del forecast de suministros se calcula como Suministros T1 A2=50% de ventas proyectadas para T2=50% de 793800=396900. Pagos a proveedores, la empresa se demora en promedio 53 días en pagarle a sus proveedores, por lo tanto la ecuación queda de la siguiente manera Pagos a proveedores T1 A2=53365\*793800= 115140. Siguiendo con los costos que se proyectan, los cuales se definieron como el 25% del forecast de ventas, por lo que corresponde a Costos=25%\*793800= 198450. El flujo de efectivo neto para T1 A2 va a ser igual a las ventas proyectadas menos el pagos a proveedores menos los costos Flujo de Efectivo Neto= 793800-115140-198450=480210. Con todo lo anterior podemos calcular el saldo de efectivo al final de T1A2, el cual se define como Saldo de efectivo al final de T1A2=1495000+480210=1975210
+1.  Se espera un aumento de 8% en las ventas de cada trimestre, y como las ventas del primer trimestre actual fueron 735000, lo que multiplicado por el 8%. T1 A 2= 735000\*1.08=793800 . Luego las cuentas por cobrar cobrar serán iguales al pronóstico de ventas multiplicado por el periodo de cuentas por cobrar, luego se resta el porcentaje "incobrable" Cuentas por cobrar=(793800\*57365)- (10%\*793800)=124446. Por el lado del forecast de suministros se calcula como Suministros T1 A2=50% de ventas proyectadas para T2=50% de 793800=396900. Pagos a proveedores, la empresa se demora en promedio 53 días en pagarle a sus proveedores, por lo tanto la ecuación queda de la siguiente manera Pagos a proveedores T1 A2=53365\*793800= 115140. Siguiendo con los costos que se proyectan, los cuales se definieron como el 25% del forecast de ventas, por lo que corresponde a Costos=25%\*793800= 198450. El flujo de efectivo neto para T1 A2 va a ser igual a las ventas proyectadas menos el pagos a proveedores menos los costos Flujo de Efectivo Neto= 793800-115140-198450=480210. Con todo lo anterior podemos calcular el saldo de efectivo al final de T1A2, el cual se define como Saldo de efectivo al final de T1A2=1495000+480210=1975210
 
 De forma más ordenada se procederá a dejar una tabla con la información de los cálculos para cada uno de los trimestres.
 
 ››››
 
 |                                          |             |             |             |             |
-|------------------------------------------|-------------|-------------|-------------|-------------|
+|-------------------------|------------|------------|------------|------------|
 |                                          | Trimestre 1 | Trimestre 2 | Trimestre 3 | Trimestre 4 |
 | Ventas proyectadas                       | 793800      | 857424      | 944837      | 890408      |
 | Cuentas por cobrar                       | 124446      | 134595      | 148301      | 139524      |
@@ -346,7 +362,7 @@ De forma más ordenada se procederá a dejar una tabla con la información de lo
 | Flujo de Efectivo Neto                   | 480210      | 519287      | 572117      | 538157      |
 | Saldo de Efectivo al Final del Trimestre | 1975210     | 2494497     | 3066614     | 3604771     |
 
-2.  Realizar este cambio en el saldo mínimo de efectivo solo implica que la empresa va a reducir su \"colchón\" económico, con lo que estaría dispuesto a poner mayor cantidad de efectivo en circulación para conseguir sus objetivos y poder suplir la demanda solicitada. Como se puede ver en la tabla anterior, tanto para 90000 dólares como para los 70000 dólares no será necesario, ya que el flujo mínimo está muy por encima del mínimo, debido a esto Kiefer no presentará problemas económicos según sus proyecciones.
+2.  Realizar este cambio en el saldo mínimo de efectivo solo implica que la empresa va a reducir su "colchón" económico, con lo que estaría dispuesto a poner mayor cantidad de efectivo en circulación para conseguir sus objetivos y poder suplir la demanda solicitada. Como se puede ver en la tabla anterior, tanto para 90000 dólares como para los 70000 dólares no será necesario, ya que el flujo mínimo está muy por encima del mínimo, debido a esto Kiefer no presentará problemas económicos según sus proyecciones.
 
 3.  Para calcular nuevamente el presupuesto de ventas con un crecimiento de 5% y 11% en las ventas con respecto al trimestre del año anterior y como dice manteniendo el saldo mínimo en lo que Adam propuso, lo que es un valor de 90000. A continuación se encontrará una tabla resumen de los resultado:  
 
